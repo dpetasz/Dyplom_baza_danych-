@@ -39,31 +39,31 @@ set @kom =  'B³¹d wykonania procedury: ' + ERROR_MESSAGE()
 					
 end catch
 
-
+go
 -------------------
 ------------------
-create procedure pokazRezyser
+alter procedure pokazRezyser
 as
 select *, nazwisko + ' ' + imie as rezyser from Rezyser
-order by nazwisko
-
+order by idrezyser desc
+go
 -------------------
 ------------------
-create procedure pokazKompozytor
+alter procedure pokazKompozytor
 as
 select *, nazwisko + ' ' + imie as Kompozytor from Kompozytor
-order by nazwisko
-
+order by idkompozytor desc
+go
 -------------------
 ------------------
-create procedure pokazRodzaj
+Alter procedure pokazRodzaj
 as
 select * from Rodzaj
-order by nazwa
-
+order by idrodzaj desc
+go
 -------------------
 ------------------
-create procedure pokazPrzedstawienie
+alter procedure pokazPrzedstawienie
 as
 select  p.nazwa +' rodzaj: '+ rj.nazwa +' re¿yser: '+ r.nazwisko + ' ' + r.imie + ', kompozytor: '
 	+ k.nazwisko + ' ' + k.imie + ', data premiery: ' 
@@ -72,9 +72,9 @@ select  p.nazwa +' rodzaj: '+ rj.nazwa +' re¿yser: '+ r.nazwisko + ' ' + r.imie 
 		join Rezyser as r on p.idrezyser = r.idrezyser
 		join Kompozytor as k on p.idkompozytor = k.idkompozytor
 		join Rodzaj as rj on p.idrodzaj = rj.idrodzaj
-order by p.nazwa
+order by p.idprzed desc
 
-
+go
 -------------------
 ------------------
 create procedure pokazAkt
