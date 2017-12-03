@@ -1,4 +1,4 @@
-use [TW]
+use [dypTW]
 go
 
 create procedure pokazLogin
@@ -428,4 +428,44 @@ set @kom = ERROR_MESSAGE()
 					
 end catch
 
+go
+
+create procedure dodajFx_obrotowka
+@idAkt int,
+@nazwa varchar (20),
+@predkosc int,
+@kierunek bit,
+@stop decimal(5,2),
+@opis nvarchar(200),
+@kom nvarchar(200) output
+
+as 
+begin try
+if @nazwa = ''
+set @nazwa = 'FX '
+
+if @opis = ''
+set @opis = 'Brak opisu'
+
+begin tran
+insert into Fx_obrotowka(idakt,  nazwa, predkosc, kierunek, miejsce_stop, opis)
+		select @idAkt,
+				@nazwa,
+				@predkosc,
+				@kierunek,
+				@stop,
+				@opis
+
+commit tran
+
+set @kom = 'zapisano: ' + @nazwa 
+		
+end try
+
+begin catch
+if @@trancount>0
+rollback tran
+set @kom = ERROR_MESSAGE() 
+
+end catch
 go
