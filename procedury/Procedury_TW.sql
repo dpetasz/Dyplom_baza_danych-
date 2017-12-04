@@ -390,8 +390,9 @@ go
 --------------------------
 ---------------------------
 
-create procedure AktualizujAkt
+alter procedure AktualizujAkt
 @idakt int,
+@idprzed int,
 @nazwa varchar(50),
 @opis nvarchar(200),
 @dlugosc time(0),
@@ -409,7 +410,7 @@ throw 60000,'Nie ma takiego Aktu ',10
 begin tran
 
 update  Akt
-		set 
+		set idprzed = @idprzed,
 			nazwa =	@nazwa,
 			dlugosc = @dlugosc,
 			opis = @opis
@@ -459,6 +460,48 @@ insert into Fx_obrotowka(idakt,  nazwa, predkosc, kierunek, miejsce_stop, opis)
 commit tran
 
 set @kom = 'zapisano: ' + @nazwa 
+		
+end try
+
+begin catch
+if @@trancount>0
+rollback tran
+set @kom = ERROR_MESSAGE() 
+
+end catch
+go
+
+create procedure aktualizujFx_obrotowka
+@idfx int,
+@idAkt int,
+@nazwa varchar (20),
+@predkosc int,
+@kierunek bit,
+@stop decimal(5,2),
+@opis nvarchar(200),
+@kom nvarchar(200) output
+
+as 
+begin try
+if @nazwa = ''
+set @nazwa = 'FX '
+
+if @opis = ''
+set @opis = 'Brak opisu'
+
+begin tran
+update Fx_obrotowka
+		set idakt = @idAkt,
+			nazwa =	@nazwa,
+			predkosc =	@predkosc,
+			kierunek =	@kierunek,
+			miejsce_stop =	@stop,
+			opis = 	@opis
+			where idfx_obrotowka = @idfx
+
+commit tran
+
+set @kom = 'zaktualizowano: ' + @nazwa 
 		
 end try
 
